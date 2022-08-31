@@ -1,0 +1,84 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/app-react-twilio/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/app-react-twilio",
+        "index": "apps/app-react-twilio/src/index.html",
+        "baseHref": "/",
+        "main": "apps/app-react-twilio/src/main.tsx",
+        "polyfills": "apps/app-react-twilio/src/polyfills.ts",
+        "tsConfig": "apps/app-react-twilio/tsconfig.app.json",
+        "assets": [
+          "apps/app-react-twilio/src/favicon.ico",
+          "apps/app-react-twilio/src/assets"
+        ],
+        "styles": ["apps/app-react-twilio/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/app-react-twilio/src/environments/environment.ts",
+              "with": "apps/app-react-twilio/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "app-react-twilio:build",
+        "hmr": true,
+        "proxyConfig": "apps/app-react-twilio/proxy.conf.json"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app-react-twilio:build:development"
+        },
+        "production": {
+          "buildTarget": "app-react-twilio:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/app-react-twilio/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/app-react-twilio"],
+      "options": {
+        "jestConfig": "apps/app-react-twilio/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
