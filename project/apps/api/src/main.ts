@@ -8,16 +8,14 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-app.post('/send-sms', function (req, res, next) {
+app.post('/send-sms', async (req, res, next) => {
   const { number } = req.body;
 
-  client.messages
-    .create({
-      body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
-      from: '+15626675225',
-      to: process.env.MY_NUMBER,
-    })
-    .then((message) => console.log(message.sid));
+  const message = await client.messages.create({
+    body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+    from: process.env.TWILIO_NUMBER,
+    to: number || process.env.MY_NUMBER,
+  });
 
   res.json(number);
 });
