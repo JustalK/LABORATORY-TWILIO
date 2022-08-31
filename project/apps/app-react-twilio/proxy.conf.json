@@ -2,5 +2,9 @@
   "/send-sms": {
     "target": "http://localhost:3333",
     "secure": false
+  },
+  "/experience2": {
+    "target": "http://localhost:3333",
+    "secure": false
   }
 }
