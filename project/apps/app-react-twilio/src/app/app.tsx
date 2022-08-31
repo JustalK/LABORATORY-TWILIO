@@ -1,51 +1,27 @@
-import { useState } from 'react';
-import { Message } from '@project/api-interfaces';
+import { Route, Routes, Link } from 'react-router-dom';
+import Experience1 from './views/Experience1';
+import Experience2 from './views/Experience2';
 
-export const App = () => {
-  const [number, setNumber] = useState<string>('');
-
-  const sendSMS = async () => {
-    await fetch('/send-sms', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        number,
-      }),
-    });
-  };
-
-  const createService = async () => {
-    await fetch('/experience2/create-service', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        number,
-      }),
-    });
-  };
-
-  const getServices = async () => {
-    await fetch('/experience2/service');
-  };
-
+export function App() {
   return (
     <>
-      <input value={number} onChange={(e) => setNumber(e.target.value)} />
-      <div>
-        <button onClick={() => sendSMS()} disabled={!number}>
-          Send an SMS
-        </button>
-        <button onClick={() => createService()}>Create a service</button>
-        <button onClick={() => getServices()}>Get all services</button>
+      <div role="navigation">
+        <ul>
+          <li>
+            <Link to="/">Experience1</Link>
+          </li>
+          <li>
+            <Link to="/experience2">Experience2</Link>
+          </li>
+        </ul>
       </div>
+      <Routes>
+        <Route path="/" element={<Experience1 />} />
+        <Route path="/experience2" element={<Experience2 />} />
+      </Routes>
+      {/* END: routes */}
     </>
   );
-};
+}
 
 export default App;

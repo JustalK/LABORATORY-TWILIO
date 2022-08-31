@@ -12,18 +12,18 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-router.post('/create-service', async (req, res) => {
-  const { uniqueName, friendlyName } = req.body;
+const crypto = require('crypto');
 
-  client.serverless.v1.services
-    .create({
-      includeCredentials: true,
-      uniqueName: uniqueName || 'demo2',
-      friendlyName: friendlyName || 'testing2',
-    })
-    .then((service) => console.log(service.sid));
+router.post('/service', async (req, res) => {
+  const { serviceName } = req.body;
 
-  res.json(true);
+  const service = await client.serverless.v1.services.create({
+    includeCredentials: true,
+    uniqueName: crypto.randomBytes(20).toString('hex'),
+    friendlyName: serviceName,
+  });
+
+  res.json(service);
 });
 
 router.get('/service', async (req, res) => {
@@ -32,6 +32,14 @@ router.get('/service', async (req, res) => {
   const services = await client.serverless.v1.services.list({ limit: 20 });
 
   res.json(services);
+});
+
+router.delete('/service', async (req, res) => {
+  const { sid } = req.body;
+
+  await client.serverless.v1.services(sid).remove();
+
+  res.json(true);
 });
 
 router.post('/create-environment', async (req, res) => {
