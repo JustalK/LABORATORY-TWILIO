@@ -82,6 +82,42 @@ The response to this call is a SID, that will be used in almost all the other re
 - Create the entire service, environment and function using the interface where nobody have access
 - In our project, the scripts will be sent to our repository and using a curl in the pipeline or a node.js script, I will upload the function on twilio. This way I have control over the twilio access.
 
+In my example, I created a button for uploading a script from the `scripts` folder of the api.
+
+```js
+router.post("/upload", async (req, res) => {
+  const { sid, fid, filename } = req.body;
+
+  const serviceUrl = `https://serverless-upload.twilio.com/v1/Services/${sid}`;
+  const uploadUrl = `${serviceUrl}/Functions/${fid}/Versions`;
+
+  const form = new FormData();
+  form.append("Path", "/" + filename);
+  form.append("Visibility", "public");
+  form.append(
+    "Content",
+    fs.createReadStream(`${__dirname}/assets/scripts/${filename}.js`),
+    {
+      contentType: "application/javascript",
+    }
+  );
+
+  await axios.post(uploadUrl, form, {
+    auth: {
+      username: accountSid,
+      password: authToken,
+    },
+    headers: form.getHeaders(),
+  });
+
+  res.json(true);
+});
+```
+
+If the function has been defined public, we can be accessed it with Postman or even our browser.
+
 #### Experience3: Getting the logs of the messages
 
-Just a simple example of how to get the logs of the message, it can be quite interesting if it need to be use on an external website
+Just a simple example of how to get the logs of the message, it can be quite interesting if it need to be use on an external website.
+
+#### IVR (Interactive Voice Record)

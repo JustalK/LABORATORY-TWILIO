@@ -54,6 +54,14 @@ router.post('/environment', async (req, res) => {
   res.json(environment);
 });
 
+router.get('/environments/:sid', async (req, res) => {
+  const { sid } = req.params;
+  const environments = await client.serverless.v1
+    .services(sid)
+    .environments.list({ limit: 20 });
+  res.json(environments);
+});
+
 router.post('/function', async (req, res) => {
   const { sid, name } = req.body;
 
@@ -72,18 +80,27 @@ router.get('/functions/:sid', async (req, res) => {
   res.json(functions);
 });
 
+router.get('/functions-versions/:sid/:fid', async (req, res) => {
+  const { sid, fid } = req.params;
+  const functions = await client.serverless.v1
+    .services(sid)
+    .functions(fid)
+    .functionVersions.list({ limit: 20 });
+  res.json(functions);
+});
+
 router.post('/upload', async (req, res) => {
-  const { sid, fid } = req.body;
+  const { sid, fid, filename } = req.body;
 
   const serviceUrl = `https://serverless-upload.twilio.com/v1/Services/${sid}`;
   const uploadUrl = `${serviceUrl}/Functions/${fid}/Versions`;
 
   const form = new FormData();
-  form.append('Path', '/thanos');
+  form.append('Path', '/' + filename);
   form.append('Visibility', 'public');
   form.append(
     'Content',
-    fs.createReadStream(__dirname + '/assets/scripts/test.js'),
+    fs.createReadStream(`${__dirname}/assets/scripts/${filename}.js`),
     {
       contentType: 'application/javascript',
     }
@@ -98,6 +115,40 @@ router.post('/upload', async (req, res) => {
   });
 
   res.json(true);
+});
+
+router.post('/builds', async (req, res) => {
+  const { sid, fvid } = req.body;
+
+  const build = await client.serverless.v1.services(sid).builds.create({
+    functionVersions: [fvid],
+  });
+
+  res.json(build);
+});
+
+router.get('/builds/:sid', async (req, res) => {
+  const { sid } = req.params;
+  const services = await client.serverless.v1
+    .services(sid)
+    .builds.list({ limit: 20 });
+  res.json(services);
+});
+
+router.post('/deploy', async (req, res) => {
+  const { sid, eid, bid } = req.body;
+
+  const deployement = await client.serverless.v1
+    .services(sid)
+    .environments(eid)
+    .deployments.create({ buildSid: bid });
+
+  res.json(deployement);
+});
+
+router.get('/deploy', async (req, res) => {
+  const services = await client.serverless.v1.deployments.list({ limit: 20 });
+  res.json(services);
 });
 
 module.exports = router;

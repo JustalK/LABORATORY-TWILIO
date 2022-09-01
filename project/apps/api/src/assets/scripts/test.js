@@ -3,6 +3,6 @@ exports.handler = (context, event, callback) => {
 
   callback(null, {
     sparedByThanos,
-    quote: 'You should have gone for the head!',
+    quote: 'You should have gone for the head*',
   });
 };

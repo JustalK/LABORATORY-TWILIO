@@ -3,14 +3,25 @@ import { useState } from 'react';
 interface ServiceProps {
   sid: string;
   friendlyName: string;
+  domainSuffix: string;
+  dateCreated: string;
 }
 
 export const App = () => {
   const [name, setname] = useState<string>('');
   const [sid, setSid] = useState<string>('');
   const [fid, setFid] = useState<string>('');
+  const [fvid, setFvid] = useState<string>('');
+  const [eid, setEid] = useState<string>('');
+  const [bid, setBid] = useState<string>('');
+  const [filename, setFilename] = useState<string>('');
   const [services, setServices] = useState<ServiceProps[]>([]);
+  const [environments, setEnvironments] = useState<ServiceProps[]>([]);
   const [functions, setFunctions] = useState<ServiceProps[]>([]);
+  const [builds, setBuilds] = useState<ServiceProps[]>([]);
+  const [functionsVersions, setFunctionsVersions] = useState<ServiceProps[]>(
+    []
+  );
 
   const createService = async () => {
     const data = await fetch('/experience2/service', {
@@ -62,6 +73,12 @@ export const App = () => {
     console.log(newEnvironment);
   };
 
+  const getEnvironments = async () => {
+    const data = await fetch(`/experience2/environments/${sid}`);
+    const all = await data.json();
+    setEnvironments(all);
+  };
+
   const createFunction = async () => {
     const data = await fetch('/experience2/function', {
       method: 'POST',
@@ -84,6 +101,12 @@ export const App = () => {
     setFunctions(allFunctions);
   };
 
+  const getFunctionsVersions = async () => {
+    const data = await fetch(`/experience2/functions-versions/${sid}/${fid}`);
+    const all = await data.json();
+    setFunctionsVersions(all);
+  };
+
   const upload = async () => {
     const data = await fetch('/experience2/upload', {
       method: 'POST',
@@ -94,6 +117,44 @@ export const App = () => {
       body: JSON.stringify({
         sid,
         fid,
+        filename,
+      }),
+    });
+    console.log(data);
+  };
+
+  const build = async () => {
+    const data = await fetch('/experience2/builds', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sid,
+        fvid,
+      }),
+    });
+    console.log(data);
+  };
+
+  const getBuilds = async () => {
+    const data = await fetch(`/experience2/builds/${sid}`);
+    const all = await data.json();
+    setBuilds(all);
+  };
+
+  const deploy = async () => {
+    const data = await fetch('/experience2/deploy', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sid,
+        eid,
+        bid,
       }),
     });
     console.log(data);
@@ -142,6 +203,23 @@ export const App = () => {
           Create environment for a service
         </button>
       </div>
+      <hr />
+      <div>
+        <div>
+          SID Service:{' '}
+          <input value={sid} onChange={(e) => setSid(e.target.value)} />
+        </div>
+        <button onClick={() => getEnvironments()}>Get all environment</button>
+        <div>
+          {environments.map((s: ServiceProps) => {
+            return (
+              <div>
+                {s.domainSuffix}: {s.sid}
+              </div>
+            );
+          })}
+        </div>
+      </div>
       <h1>Functions</h1>
       <div>
         <div>
@@ -172,6 +250,29 @@ export const App = () => {
           })}
         </div>
       </div>
+      <hr />
+      <div>
+        <div>
+          SID Service:{' '}
+          <input value={sid} onChange={(e) => setSid(e.target.value)} />
+        </div>
+        <div>
+          FID Service:{' '}
+          <input value={fid} onChange={(e) => setFid(e.target.value)} />
+        </div>
+        <button onClick={() => getFunctionsVersions()}>
+          Get all functions version
+        </button>
+        <div>
+          {functionsVersions.map((f: ServiceProps) => {
+            return (
+              <div>
+                {f.dateCreated}: {f.sid}
+              </div>
+            );
+          })}
+        </div>
+      </div>
       <h1>Upload</h1>
       <div>
         <div>
@@ -182,7 +283,59 @@ export const App = () => {
           FID Service:{' '}
           <input value={fid} onChange={(e) => setFid(e.target.value)} />
         </div>
+        <div>
+          Filename:{' '}
+          <input
+            value={filename}
+            onChange={(e) => setFilename(e.target.value)}
+          />
+        </div>
         <button onClick={() => upload()}>Upload script</button>
+      </div>
+      <h1>Build</h1>
+      <div>
+        <div>
+          SID Service:{' '}
+          <input value={sid} onChange={(e) => setSid(e.target.value)} />
+        </div>
+        <div>
+          FVID Service:{' '}
+          <input value={fvid} onChange={(e) => setFvid(e.target.value)} />
+        </div>
+        <button onClick={() => build()}>Build</button>
+      </div>
+      <hr />
+      <div>
+        <div>
+          SID Service:{' '}
+          <input value={sid} onChange={(e) => setSid(e.target.value)} />
+        </div>
+        <button onClick={() => getBuilds()}>Get all builds</button>
+        <div>
+          {builds.map((f: ServiceProps) => {
+            return (
+              <div>
+                {f.dateCreated}: {f.sid}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <h1>Deploy</h1>
+      <div>
+        <div>
+          SID Service:{' '}
+          <input value={sid} onChange={(e) => setSid(e.target.value)} />
+        </div>
+        <div>
+          EID Service:{' '}
+          <input value={eid} onChange={(e) => setEid(e.target.value)} />
+        </div>
+        <div>
+          BID Service:{' '}
+          <input value={bid} onChange={(e) => setBid(e.target.value)} />
+        </div>
+        <button onClick={() => deploy()}>Deploy build</button>
       </div>
     </>
   );
