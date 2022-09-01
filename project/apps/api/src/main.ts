@@ -6,6 +6,7 @@ app.use(express.json());
 
 app.use('/', require('./experiences/experience1'));
 app.use('/experience2', require('./experiences/experience2'));
+app.use('/experience3', require('./experiences/experience3'));
 
 const port = process.env.port || 3333;
 const server = app.listen(port, () => {

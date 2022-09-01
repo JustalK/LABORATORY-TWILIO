@@ -64,12 +64,12 @@ For defining which function to play when receiving a message. We need on the act
 Of course, everything can be handle by code. The entire interface has a crud for every part of the serverless. I have defines some of them in the api in the file `experience2`. For example, for creating a service, a simple call using our credential can be done as follow:
 
 ```js
-router.post('/service', async (req, res) => {
+router.post("/service", async (req, res) => {
   const { name } = req.body;
 
   const service = await client.serverless.v1.services.create({
     includeCredentials: true,
-    uniqueName: crypto.randomBytes(20).toString('hex'),
+    uniqueName: crypto.randomBytes(20).toString("hex"),
     friendlyName: name,
   });
 
@@ -81,3 +81,7 @@ The response to this call is a SID, that will be used in almost all the other re
 
 - Create the entire service, environment and function using the interface where nobody have access
 - In our project, the scripts will be sent to our repository and using a curl in the pipeline or a node.js script, I will upload the function on twilio. This way I have control over the twilio access.
+
+#### Experience3: Getting the logs of the messages
+
+Just a simple example of how to get the logs of the message, it can be quite interesting if it need to be use on an external website

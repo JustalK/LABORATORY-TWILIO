@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Message } from '@project/api-interfaces';
 
 export const App = () => {
   const [number, setNumber] = useState<string>('');
