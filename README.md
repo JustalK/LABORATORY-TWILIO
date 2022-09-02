@@ -1,5 +1,16 @@
 # LABORATORY-TWILIO
 
+Twilio is a service for sending SMS and handling system around SMS and Call. This project is a laboratory where I am testing some of the feature of Twilio such as the REST API, the IVR, the Serverless functions. I build the project in a **NX Workspace** with one **react** app handling the frontend and a **express** app for handling all my call to the **Twilio API**.
+
+## Plan of the presentation
+
+I explain with all the details how I build the project and my way of working.
+
+- [Theory](#theory)
+- [Experiences](#experiences)
+- [Running](#running)
+- [System](#system)
+
 ## Experiences
 
 The information for connecting the code to our account are all shown on the dashboard of our app.
@@ -61,7 +72,11 @@ For defining which function to play when receiving a message. We need on the act
 
 **By Code**
 
-Of course, everything can be handle by code. The entire interface has a crud for every part of the serverless. I have defines some of them in the api in the file `experience2`. For example, for creating a service, a simple call using our credential can be done as follow:
+Of course, everything can be handle by code. The entire interface has a crud for every part of the serverless. But the concept is a bit long to put in place if we do every using the REST Api.
+
+![./documentation/graph.jpg](./documentation/graph.jpg)
+
+I have defines some of them in the api in the file `experience2`. For example, for creating a service, a simple call using our credential can be done as follow:
 
 ```js
 router.post("/service", async (req, res) => {
@@ -114,10 +129,38 @@ router.post("/upload", async (req, res) => {
 });
 ```
 
-If the function has been defined public, we can be accessed it with Postman or even our browser.
+Once, I do everything in the order and using the right ID. I manage to deploy the API online and to access it using my browser. This function could have been use as a response from a call or SMS.
+
+![./documentation/7.png](./documentation/7.png)
+![./documentation/8.png](./documentation/8.png)
 
 #### Experience3: Getting the logs of the messages
 
 Just a simple example of how to get the logs of the message, it can be quite interesting if it need to be use on an external website.
 
 #### IVR (Interactive Voice Record)
+
+I have not got an opportunity to use this one professionally but Twilio also dispose of a very interesting system for creating IVR and Chatbot.
+
+![./documentation/9.png](./documentation/9.png)
+
+## Running
+
+I am using NX, so for starting the project use the following command:
+
+```bash
+$ nx run-many --target=serve --projects=api,app-react-twilio
+```
+
+## System
+
+Ubuntu Version: Ubuntu 20.04.1 LTS
+Node Version: v16.15.1
+
+```bash
+# Get the version of node
+$ node -v
+
+# Get the latest version of ubuntu
+$ lsb_release -a
+```
